@@ -39,3 +39,9 @@ export const register = async (full_name, email, phone, password, password2) => 
         }
     }
 }
+
+export const logout = () => {
+    Cookies.remove("access_token")
+    Cookies.remove("refresh_token")
+    useAuthStore.getState().setUser(null)
+}
