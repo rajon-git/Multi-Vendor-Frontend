@@ -9,6 +9,7 @@ import CreatePassword from './views/auth/CreatePassword'
 import StoreHeader from './views/base/StoreHeader'
 import MainWrapper from './layout/MainWrapper'
 import StoreFooter from './views/base/StoreFooter'
+import Products from './views/shop/Products'
 
 function App() {
   return (
@@ -20,9 +21,13 @@ function App() {
           <Route path='/login' element={<Login/>}/>
           <Route path='/logout' element={<Logout/>}/>
           <Route path='/register' element={<Register/>}/>
-          <Route path='/' element={<Dashboard/>}/>
+          <Route path='/dashboard' element={<Dashboard/>}/>
           <Route path='/forgot-password' element={<ForgotPassword/>}/>
           <Route path='/create-new-password' element={<CreatePassword/>}/>
+
+          {/* route components */}
+
+          <Route path='/' element={<Products/>}/>
         </Routes>
         <StoreFooter/>
       
