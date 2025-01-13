@@ -10,6 +10,7 @@ import StoreHeader from './views/base/StoreHeader'
 import MainWrapper from './layout/MainWrapper'
 import StoreFooter from './views/base/StoreFooter'
 import Products from './views/shop/Products'
+import ProductDetail from './views/shop/ProductDetail'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           {/* route components */}
 
           <Route path='/' element={<Products/>}/>
+          <Route path='/detail/:slug' element={<ProductDetail/>}/>
         </Routes>
         <StoreFooter/>
       

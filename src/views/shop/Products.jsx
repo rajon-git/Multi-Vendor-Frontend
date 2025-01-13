@@ -4,10 +4,17 @@ import { Link } from 'react-router-dom'
 
 function products() {
     const [currentItems, setProducts] = useState([])
+    const [category, setCategory] = useState([])
 
     useEffect(()=>{
         apiInstance.get(`products/`).then((res) => {
             setProducts(res.data)
+        })
+    }, [])
+
+    useEffect(()=>{
+        apiInstance.get(`category/`).then((res) => {
+            setCategory(res.data)
         })
     }, [])
     
@@ -27,7 +34,7 @@ function products() {
                 </div>
             </section>
             <div className="d-flex justify-content-center">
-                {/* {category.map((c, index) => (
+                {category.map((c, index) => (
                     <div className="align-items-center d-flex flex-column" style={{ background: "#e8e8e8", marginLeft: "10px", borderRadius: "10px", padding: "30px" }}>
                         <img src={c.image}
                             alt=""
@@ -35,7 +42,7 @@ function products() {
                         />
                         <p><a href="" className='text-dark'>{c.title}</a></p>
                     </div>
-                ))} */}
+                ))}
 
             </div>
             <section className="text-center container">
