@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import apiInstance from '../../utils/axios'
+import GetCurrentAddress from '../plugin/UserCountry'
+import UserData from '../plugin/UserData'
+import CartID from '../plugin/CartID'
 
 function ProductDetail() {
     const [product, setProduct] = useState({})
@@ -14,6 +17,11 @@ function ProductDetail() {
     const [qtyValue, setQtyValue] = useState(1)
 
     const param = useParams()
+    const currentAddress = GetCurrentAddress()
+    const userData = UserData()
+    const cart_id = CartID()
+
+    console.log(cart_id)
 
     useEffect(()=>{
         apiInstance.get(`product/${param.slug}/`).then((res)=>{
@@ -43,6 +51,9 @@ function ProductDetail() {
         console.log(sizeValue);
         console.log(colorValue);
         console.log(qtyValue);
+        console.log(currentAddress.country);
+        console.log(product.price);
+        console.log(product.id);
         
     }
   return (
