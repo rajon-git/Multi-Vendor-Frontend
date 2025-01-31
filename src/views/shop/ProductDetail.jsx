@@ -21,8 +21,6 @@ function ProductDetail() {
     const userData = UserData()
     const cart_id = CartID()
 
-    console.log(cart_id)
-
     useEffect(()=>{
         apiInstance.get(`product/${param.slug}/`).then((res)=>{
             setProduct(res.data)
@@ -47,13 +45,31 @@ function ProductDetail() {
         setQtyValue(e.target.value); 
     }
 
-    const handleAddToCart =  () => {
-        console.log(sizeValue);
-        console.log(colorValue);
-        console.log(qtyValue);
-        console.log(currentAddress.country);
-        console.log(product.price);
-        console.log(product.id);
+    const handleAddToCart = async() => {
+        // console.log(sizeValue);
+        // console.log(colorValue);
+        // console.log(qtyValue);
+        // console.log(currentAddress.country);
+        // console.log(product.price);
+        // console.log(product.id);
+
+        try {
+            const formData = new FormData();
+            formData.append("product_id", product.id);
+            formData.append("user_id", userData?.user_id);
+            formData.append("qty", qtyValue);
+            formData.append("price", product.price);
+            formData.append("shipping_amount", product.shipping_amount);
+            formData.append("country", currentAddress.country);
+            formData.append("size", sizeValue);
+            formData.append("color", colorValue);
+            formData.append("cart_id", cart_id);
+
+            const response = await apiInstance.post(`cart-view/`, formData);
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
         
     }
   return (
