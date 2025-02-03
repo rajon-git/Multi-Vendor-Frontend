@@ -11,6 +11,7 @@ import MainWrapper from './layout/MainWrapper'
 import StoreFooter from './views/base/StoreFooter'
 import Products from './views/shop/Products'
 import ProductDetail from './views/shop/ProductDetail'
+import Cart from './views/shop/Cart'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
 
           <Route path='/' element={<Products/>}/>
           <Route path='/detail/:slug' element={<ProductDetail/>}/>
+          <Route path='/cart/' element={<Cart/>}/>
         </Routes>
         <StoreFooter/>
       
