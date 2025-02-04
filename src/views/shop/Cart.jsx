@@ -3,12 +3,25 @@ import { Link } from 'react-router-dom'
 import apiInstance from '../../utils/axios'
 import UserData from '../plugin/UserData'
 import CartID from '../plugin/CartID'
+import GetCurrentAddress from '../plugin/UserCountry'
+import Swal from 'sweetalert2'
+
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+})
 
 function Cart() {
     const [cart, setCart] =  useState([])
+    const [cartTotal,setCartTotal] =  useState([])
+    const [productQuantities,setProductQuantities] =  useState('')
 
     const userData = UserData();
     const cart_id = CartID()
+    const currentAddress = GetCurrentAddress()
 
     const fetchCartData = (cartId, userId) => {
         const url = userId ? `cart-list/${cartId}/${userId}/` : `cart-list/${cartId}/`;
@@ -17,19 +30,85 @@ function Cart() {
         })
     }
 
-    console.log(cart)
+    const fetchCartTotal = (cartId, userId) => {
+      const url = userId ? `cart-detail/${cartId}/${userId}/` : `cart-detail/${cartId}/`;
+      apiInstance.get(url).then((response) => {
+        setCartTotal(response.data);
+      })
+  }
+
+    
 
     if(cart_id !== undefined || cart_id !== null){
         if(userData !== undefined){
             useEffect(()=>{
                 fetchCartData(cart_id, userData?.user_id);
+                fetchCartTotal(cart_id, userData?.user_id);
             },[])
         } else {
             useEffect(()=>{
                 fetchCartData(cart_id, null);
+                fetchCartTotal(cart_id, null);
             },[])
         }
     }
+
+    useEffect(()=>{
+      const initialQuantities = {}
+      cart.forEach((c)=>{
+        initialQuantities[c.product?.id] = c.qty;
+      })
+      setProductQuantities(initialQuantities);
+    }, [cart]);
+
+    const handleQtyChange= (event, product_id) => {
+        const quantity = event.target.value;
+        setProductQuantities((prevState) => ({...prevState, [product_id]: quantity }));
+    }
+
+    const updateCart = async (product_id, price, shipping_amount, color, size) => {
+        const qtyValue = productQuantities[product_id];
+        const formData = new FormData();
+        formData.append("product_id", product_id);
+        formData.append("user_id", userData?.user_id);
+        formData.append("qty", qtyValue);
+        formData.append("price", price);
+        formData.append("shipping_amount", shipping_amount);
+        formData.append("country", currentAddress.country);
+        formData.append("size", size);
+        formData.append("color", color);
+        formData.append("cart_id", cart_id);
+
+        const response = await apiInstance.post('cart-view/', formData);
+        fetchCartData(cart_id, userData?.user_id);
+        fetchCartTotal(cart_id, userData?.user_id);
+
+        Toast.fire({
+          icon:'success',
+          title: response.data.message
+      });
+    }
+
+    const handleDeleteCartItem = async(itemId) => {
+      const url = UserData?.user_id ?
+      `cart-delete/${cart_id}/${itemId}/${UserData?.user_id}` :
+      `cart-delete/${cart_id}/${itemId}/`;
+
+      try {
+        await apiInstance.delete(url);
+
+        fetchCartData(cart_id, userData?.user_id);
+        fetchCartTotal(cart_id, userData?.user_id);
+
+        Toast.fire({
+          icon:'success',
+          title: "Item remove from cart"
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   return (
     <div>
   <main className="mt-5">
@@ -89,7 +168,7 @@ function Cart() {
                         <span>Desphixs</span>
                       </p>
                       <p className="mt-3">
-                        <button className="btn btn-danger ">
+                        <button onClick={()=>handleDeleteCartItem(c.id)} className="btn btn-danger ">
                           <small><i className="fas fa-trash me-2" />Remove</small>
                         </button>
                       </p>
@@ -100,14 +179,14 @@ function Cart() {
                           <input
                             type="number"
                             className="form-control"
-                            value={c.qty}
+                            value={productQuantities[c.product?.id] || c.qty}
                             min={1}
-
+                            onChange={(e) =>handleQtyChange(e,c.product?.id)}
                           />
                         </div>
-                        <button className='ms-2 btn btn-primary'><i className='fas fa-rotate-right'></i></button>
+                        <button onClick={()=> updateCart(c.product?.id,c.product?.price, c.product?.shipping_amount, c.color, c.size)} className='ms-2 btn btn-primary'><i className='fas fa-rotate-right'></i></button>
                       </div>
-                      <h5 className="mb-2 mt-3 text-center"><span className="align-middle">$100.00</span></h5>
+                      <h5 className="mb-2 mt-3 text-center"><span className="align-middle">{c.sub_total}</span></h5>
                     </div>
                   </div>
                 ))}
@@ -224,24 +303,24 @@ function Cart() {
                   <h5 className="mb-3">Cart Summary</h5>
                   <div className="d-flex justify-content-between mb-3">
                     <span>Subtotal </span>
-                    <span>$10.00</span>
+                    <span>{cartTotal.sub_total?.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>Shipping </span>
-                    <span>$10.00</span>
+                    <span>{cartTotal.shipping?.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>Tax </span>
-                    <span>$10.00</span>
+                    <span>{cartTotal.tax?.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>Servive Fee </span>
-                    <span>$10.00</span>
+                    <span>{cartTotal.service_fee?.toFixed(2)}</span>
                   </div>
                   <hr className="my-4" />
                   <div className="d-flex justify-content-between fw-bold mb-5">
                     <span>Total </span>
-                    <span>$10.00</span>
+                    <span>{cartTotal.total?.toFixed(2)}</span>
                   </div>
                   <button className="btn btn-primary btn-rounded w-100" >
                     Got to checkout

@@ -59,21 +59,21 @@ function Products() {
 
     const handleAddToCart = async (product_id, price, shipping_amount) => {
         const formData = new FormData();
-            formData.append("product_id", product_id);
-            formData.append("user_id", userData?.user_id);
-            formData.append("qty", qtyValue);
-            formData.append("price", price);
-            formData.append("shipping_amount", shipping_amount);
-            formData.append("country", currentAddress.country);
-            formData.append("size", sizeValue);
-            formData.append("color", colorValue);
-            formData.append("cart_id", cart_id);
+        formData.append("product_id", product_id);
+        formData.append("user_id", userData?.user_id);
+        formData.append("qty", qtyValue);
+        formData.append("price", price);
+        formData.append("shipping_amount", shipping_amount);
+        formData.append("country", currentAddress.country);
+        formData.append("size", sizeValue);
+        formData.append("color", colorValue);
+        formData.append("cart_id", cart_id);
 
-            const response = await apiInstance.post(`cart-view/`, formData);
-            Toast.fire({
-                icon:'success',
-                title: response.data.message
-            });
+        const response = await apiInstance.post(`cart-view/`, formData);
+        Toast.fire({
+            icon:'success',
+            title: response.data.message
+        });
     }
 
     useEffect(()=>{
