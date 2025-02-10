@@ -19,6 +19,15 @@ function Cart() {
     const [cartTotal,setCartTotal] =  useState([])
     const [productQuantities,setProductQuantities] =  useState('')
 
+    const [fullName, setFullName] = useState("")
+    const [email, setEmail] = useState("")
+    const [mobile, setMobile] = useState("")
+
+    const [address, setAddress] = useState("")
+    const [city, setCity] = useState("")
+    const [state, setState] = useState("")
+    const [country, setCountry] = useState("")
+
     const userData = UserData();
     const cart_id = CartID()
     const currentAddress = GetCurrentAddress()
@@ -107,6 +116,53 @@ function Cart() {
       } catch (error) {
         console.log(error);
       }
+    }
+
+    const handleChange = (e) => {
+      const {name, value} = e.target;
+
+      switch (name) {
+        case 'fullName':
+          setFullName(value);
+          break;
+
+        case 'email':
+          setEmail(value);
+          break;
+
+        case 'mobile':
+          setMobile(value);
+          break;
+
+        case 'address':
+          setAddress(value);
+          break;
+
+        case 'city':
+          setCity(value);
+          break;
+        
+        case 'state':
+          setState(value);
+          break;
+
+        case 'country':
+          setCountry(value);
+          break;
+      
+        default:
+          break;
+      }
+    }
+
+    const createOrder = () => {
+      console.log(fullName);
+      console.log(email);
+      console.log(mobile);
+      console.log(address);
+      console.log(city);
+      console.log(state);
+      console.log(country);
     }
 
   return (
@@ -213,6 +269,8 @@ function Cart() {
                         id=""
                         name='fullName'
                         className="form-control"
+                        onChange={handleChange}
+                        value={fullName}
                       />
                     </div>
                   </div>
@@ -228,6 +286,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='email'
+                        onChange={handleChange}
+                        value={email}
 
                       />
                     </div>
@@ -240,6 +300,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='mobile'
+                        onChange={handleChange}
+                        value={mobile}
                       />
                     </div>
                   </div>
@@ -256,6 +318,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='address'
+                        onChange={handleChange}
+                        value={address}
                       />
                     </div>
                   </div>
@@ -267,6 +331,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='city'
+                        onChange={handleChange}
+                        value={city}
                       />
                     </div>
                   </div>
@@ -279,6 +345,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='state'
+                        onChange={handleChange}
+                        value={state}
                       />
                     </div>
                   </div>
@@ -290,6 +358,8 @@ function Cart() {
                         id="form6Example1"
                         className="form-control"
                         name='country'
+                        onChange={handleChange}
+                        value={country}
                       />
                     </div>
                   </div>
@@ -322,7 +392,7 @@ function Cart() {
                     <span>Total </span>
                     <span>{cartTotal.total?.toFixed(2)}</span>
                   </div>
-                  <button className="btn btn-primary btn-rounded w-100" >
+                  <button className="btn btn-primary btn-rounded w-100" onClick={createOrder}>
                     Got to checkout
                   </button>
                 </section>
